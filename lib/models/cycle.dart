@@ -1,0 +1,61 @@
+class Cycle {
+  // One menstrual cycle: from the first day of a period to the day before the next period starts.
+  final String id;
+  final DateTime startDate;
+  // Last day if bleeding.
+  // null while the period is still ongoing.
+  // not null when user click on period end button
+  final DateTime? periodEndDate;
+  // Last day of this cycle.
+  // null = this is the current cycle.
+  final DateTime? cycleEndDate;
+
+  // current cycle
+  bool get isCurrent => cycleEndDate == null;
+  // period day (day1 of your period, day2 of your period...)
+  bool get isPeriodOngoing => periodEndDate == null;
+  int? get periodLength =>
+      periodEndDate == null ? null : daysBetween(startDate, periodEndDate!) + 1;
+
+  int? get cycleLength =>
+      cycleEndDate == null ? null : daysBetween(startDate, cycleEndDate!) + 1;
+
+  // Day of the cycle (Day 1 of your cycle)
+  int dayOfCycle(DateTime today) => daysBetween(startDate, today) + 1;
+
+  int? dayOfPeriod(DateTime today) {
+    // pre-condition: null if the period hasn't start yet
+
+    if (normalizeDate(today).isBefore(normalizeDate(startDate))) {
+      return null;
+    }
+
+    // null if the period already ended
+    if (periodEndDate != null &&
+        normalizeDate(today).isAfter(normalizeDate(periodEndDate!))) {
+      return null;
+    }
+
+    return dayOfCycle(today);
+  }
+
+  Cycle({
+    required this.id,
+    required this.startDate,
+    this.periodEndDate,
+    this.cycleEndDate,
+  });
+
+  // helper function
+  // since DateTime take all the hour, day, month, year, so calculation could be incorrect for some cases.
+  // so take only the day, month and year is more accurate
+
+  // Normalize DateTime to calendar date.
+  DateTime normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  int daysBetween(DateTime start, DateTime end) {
+    return normalizeDate(end).difference(normalizeDate(start)).inDays;
+  }
+}
