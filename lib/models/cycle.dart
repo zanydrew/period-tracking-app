@@ -26,13 +26,13 @@ class Cycle {
   int? dayOfPeriod(DateTime today) {
     // pre-condition: null if the period hasn't start yet
 
-    if (normalizeDate(today).isBefore(normalizeDate(startDate))) {
+    if (dateOnly(today).isBefore(dateOnly(startDate))) {
       return null;
     }
 
     // null if the period already ended
     if (periodEndDate != null &&
-        normalizeDate(today).isAfter(normalizeDate(periodEndDate!))) {
+        dateOnly(today).isAfter(dateOnly(periodEndDate!))) {
       return null;
     }
 
@@ -41,21 +41,31 @@ class Cycle {
 
   Cycle({
     required this.id,
-    required this.startDate,
-    this.periodEndDate,
-    this.cycleEndDate,
-  });
+    required DateTime startDate,
+    DateTime? periodEndDate,
+    DateTime? cycleEndDate,
+  }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
+       periodEndDate = periodEndDate == null
+           ? null
+           : DateTime(
+               periodEndDate.year,
+               periodEndDate.month,
+               periodEndDate.day,
+             ),
+       cycleEndDate = cycleEndDate == null
+           ? null
+           : DateTime(cycleEndDate.year, cycleEndDate.month, cycleEndDate.day);
 
   // helper function
   // since DateTime take all the hour, day, month, year, so calculation could be incorrect for some cases.
   // so take only the day, month and year is more accurate
 
   // Normalize DateTime to calendar date.
-  DateTime normalizeDate(DateTime date) {
+  DateTime dateOnly(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
 
   int daysBetween(DateTime start, DateTime end) {
-    return normalizeDate(end).difference(normalizeDate(start)).inDays;
+    return dateOnly(end).difference(dateOnly(start)).inDays;
   }
 }
