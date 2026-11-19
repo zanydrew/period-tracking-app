@@ -6,17 +6,17 @@ class UserProfile {
   final List<Cycle> cycles = [];
 
   // Onboarding answer at first, replaced by the average when calculated in CycleService
-  final int averageCycleLength;
-  final int averagePeriodLength;
+  int averageCycleLength;
+  int averagePeriodLength;
 
   // Number of finished cycles since she started using the app (could be use later for compute average)
-  final int completedCycleCount;
+  int completedCycleCount;
 
   // "Remind me if my period is late".
-  final bool lateReminderEnabled;
+  bool lateReminderEnabled;
 
   // false = show the onboarding screens, true = go to Home.
-  final bool onboardingCompleted;
+  bool onboardingCompleted;
 
   UserProfile({
     required this.id,

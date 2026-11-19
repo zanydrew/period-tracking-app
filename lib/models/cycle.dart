@@ -8,10 +8,10 @@ class Cycle {
   // Last day if bleeding.
   // null while the period is still ongoing.
   // not null when user click on period end button
-  final DateTime? periodEndDate;
+  DateTime? periodEndDate;
   // Last day of this cycle.
   // null = this is the current cycle.
-  final DateTime? cycleEndDate;
+  DateTime? cycleEndDate;
 
   /// true = periodEndDate was estimated (from onboarding or a "period ended" button wasn't clicked), not entered by her.
   bool periodEndEstimated;
@@ -31,7 +31,7 @@ class Cycle {
   Cycle({
     required this.id,
     required DateTime startDate,
-    required this.periodEndEstimated,
+    this.periodEndEstimated = false,
     DateTime? periodEndDate,
     DateTime? cycleEndDate,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
