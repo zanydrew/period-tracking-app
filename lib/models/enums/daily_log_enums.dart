@@ -2,16 +2,7 @@ enum FlowLevel { spotting, little, medium, large, heavy }
 
 enum BloodColor { lightRed, brightRed, darkRed, brown, black }
 
-enum CrampLevel {
-  none,
-  rarely,
-  slightly,
-  very,
-  extremely;
-
-  /// 0-4, used for pain charts and averages.
-  int get score => index;
-}
+enum CrampLevel { none, rarely, slightly, very, extremely }
 
 enum Mood {
   calm,

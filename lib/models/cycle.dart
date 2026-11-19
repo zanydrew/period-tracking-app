@@ -1,3 +1,5 @@
+import 'package:period_tracking_app/utils/date_utils.dart';
+
 class Cycle {
   // One menstrual cycle: from the first day of a period to the day before the next period starts.
   final String id;
@@ -55,17 +57,4 @@ class Cycle {
        cycleEndDate = cycleEndDate == null
            ? null
            : DateTime(cycleEndDate.year, cycleEndDate.month, cycleEndDate.day);
-
-  // helper function
-  // since DateTime take all the hour, day, month, year, so calculation could be incorrect for some cases.
-  // so take only the day, month and year is more accurate
-
-  // Normalize DateTime to calendar date.
-  DateTime dateOnly(DateTime date) {
-    return DateTime(date.year, date.month, date.day);
-  }
-
-  int daysBetween(DateTime start, DateTime end) {
-    return dateOnly(end).difference(dateOnly(start)).inDays;
-  }
 }
