@@ -1,26 +1,24 @@
 import 'package:period_tracking_app/models/enums/daily_log_enums.dart';
 
 class DailyLog {
-  final String id;
-  final String cycleId;
+  // no need id cus every daily log is already store inside a cycle so no need an id to link back to its cycle
+  // The date is its identifier
   final DateTime date;
 
   final FlowLevel? flow;
   final BloodColor? bloodColor;
   final CrampLevel? cramps;
-  final Set<Mood> moods;
-  final Set<BodySymptom> bodySymptoms;
+  final Set<Mood>? moods;
+  final Set<BodySymptom>? bodySymptoms;
 
   bool get isEmpty =>
       flow == null &&
       bloodColor == null &&
       cramps == null &&
-      moods.isEmpty &&
-      bodySymptoms.isEmpty;
+      moods!.isEmpty &&
+      bodySymptoms!.isEmpty;
 
   DailyLog({
-    required this.id,
-    required this.cycleId,
     required DateTime date,
     this.flow,
     this.bloodColor,
