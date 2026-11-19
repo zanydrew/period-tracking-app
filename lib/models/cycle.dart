@@ -1,3 +1,4 @@
+import 'package:period_tracking_app/models/daily_log.dart';
 import 'package:period_tracking_app/utils/date_utils.dart';
 
 class Cycle {
@@ -12,6 +13,11 @@ class Cycle {
   // null = this is the current cycle.
   final DateTime? cycleEndDate;
 
+  /// true = periodEndDate was estimated (from onboarding or a "period ended" button wasn't clicked), not entered by her.
+  bool periodEndEstimated;
+
+  final List<DailyLog> logs = [];
+
   // current cycle
   bool get isCurrent => cycleEndDate == null;
   // period day (day1 of your period, day2 of your period...)
@@ -22,28 +28,10 @@ class Cycle {
   int? get cycleLength =>
       cycleEndDate == null ? null : daysBetween(startDate, cycleEndDate!) + 1;
 
-  // Day of the cycle (Day 1 of your cycle)
-  int dayOfCycle(DateTime today) => daysBetween(startDate, today) + 1;
-
-  int? dayOfPeriod(DateTime today) {
-    // pre-condition: null if the period hasn't start yet
-
-    if (dateOnly(today).isBefore(dateOnly(startDate))) {
-      return null;
-    }
-
-    // null if the period already ended
-    if (periodEndDate != null &&
-        dateOnly(today).isAfter(dateOnly(periodEndDate!))) {
-      return null;
-    }
-
-    return dayOfCycle(today);
-  }
-
   Cycle({
     required this.id,
     required DateTime startDate,
+    required this.periodEndEstimated,
     DateTime? periodEndDate,
     DateTime? cycleEndDate,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
@@ -57,4 +45,9 @@ class Cycle {
        cycleEndDate = cycleEndDate == null
            ? null
            : DateTime(cycleEndDate.year, cycleEndDate.month, cycleEndDate.day);
+
+  @override
+  String toString() =>
+      'Cycle id: $id, start: $startDate, period end: $periodEndDate, '
+      'cycle end: $cycleEndDate, logs: ${logs.length}';
 }
