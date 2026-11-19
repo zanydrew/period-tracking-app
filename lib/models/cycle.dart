@@ -22,11 +22,6 @@ class Cycle {
   bool get isCurrent => cycleEndDate == null;
   // period day (day1 of your period, day2 of your period...)
   bool get isPeriodOngoing => periodEndDate == null;
-  int? get periodLength =>
-      periodEndDate == null ? null : daysBetween(startDate, periodEndDate!) + 1;
-
-  int? get cycleLength =>
-      cycleEndDate == null ? null : daysBetween(startDate, cycleEndDate!) + 1;
 
   Cycle({
     required this.id,

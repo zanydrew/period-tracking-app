@@ -8,6 +8,9 @@ DateTime dateOnly(DateTime date) {
   return DateTime(date.year, date.month, date.day);
 }
 
+DateTime addDays(DateTime d, int days) =>
+    DateTime(d.year, d.month, d.day + days);
+
 int daysBetween(DateTime start, DateTime end) {
   return dateOnly(end).difference(dateOnly(start)).inDays;
 }

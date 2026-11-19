@@ -1,4 +1,3 @@
-// Day of the cycle (Day 1 of your cycle)
 import 'package:period_tracking_app/models/cycle.dart';
 import 'package:period_tracking_app/models/user_profile.dart';
 import 'package:period_tracking_app/utils/date_utils.dart';
@@ -12,6 +11,9 @@ class CycleService {
   // A function is called each time _now() is used, so the real clock keeps moving, and a test can still return a fixed date.
 
   static const int minCyclesToLearn = 2;
+
+  bool usesLearnedAverages(UserProfile profile) =>
+      profile.completedCycleCount >= minCyclesToLearn;
 
   final DateTime Function() _now;
   final String Function() _newId;
@@ -152,12 +154,12 @@ class CycleService {
     if (finished.length < minCyclesToLearn) return;
 
     profile.averageCycleLength = _roundedToWholeDay(
-      finished.map((c) => c.cycleLength!).toList(),
+      finished.map((c) => getCycleLength(c)!).toList(),
     );
 
     final periodLengths = finished
-        .where((c) => c.periodLength != null && !c.periodEndEstimated)
-        .map((c) => c.periodLength!)
+        .where((c) => getPeriodLength(c) != null && !c.periodEndEstimated)
+        .map((c) => getPeriodLength(c)!)
         .toList();
     if (periodLengths.isNotEmpty) {
       profile.averagePeriodLength = _roundedToWholeDay(periodLengths);
@@ -184,6 +186,16 @@ class CycleService {
     }
     return null;
   }
+
+  /// Bleeding days, counting the first and last day, null while ongoing.
+  int? getPeriodLength(Cycle c) => c.periodEndDate == null
+      ? null
+      : daysBetween(c.startDate, c.periodEndDate!) + 1;
+
+  /// Total days, counting the first and last day, null for the current cycle.
+  int? getCycleLength(Cycle c) => c.cycleEndDate == null
+      ? null
+      : daysBetween(c.startDate, c.cycleEndDate!) + 1;
 
   /// The cycle with no end date, or null.
   Cycle? getCurrentCycle(UserProfile profile) {
@@ -223,10 +235,7 @@ class CycleService {
     profile.cycles.sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 
-  // helper functions
-
-  DateTime addDays(DateTime d, int days) =>
-      DateTime(d.year, d.month, d.day + days);
+  // helper function
 
   static int _roundedToWholeDay(List<int> values) =>
       (values.reduce((a, b) => a + b) / values.length).round();
