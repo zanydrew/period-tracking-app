@@ -1,6 +1,9 @@
+import 'package:period_tracking_app/models/cycle.dart';
+
 class UserProfile {
   final String id;
   final String name;
+  final List<Cycle> cycles = [];
 
   // Onboarding answer at first, replaced by the average when calculated in CycleService
   final int averageCycleLength;
@@ -15,11 +18,6 @@ class UserProfile {
   // false = show the onboarding screens, true = go to Home.
   final bool onboardingCompleted;
 
-  // minimun cycle count used for compute average
-  static const int minCycleToLearn = 2;
-
-  bool get usesLearnedAverages => completedCycleCount >= minCycleToLearn;
-
   UserProfile({
     required this.id,
     required this.name,
@@ -29,4 +27,9 @@ class UserProfile {
     this.lateReminderEnabled = true,
     this.onboardingCompleted = false,
   });
+
+  @override
+  String toString() =>
+      'UserProfile id: $id, name: $name, cycle: $averageCycleLength, '
+      'period: $averagePeriodLength, cycles: ${cycles.length}';
 }
