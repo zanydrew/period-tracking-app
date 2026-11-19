@@ -359,4 +359,76 @@ void main() {
       },
     );
   });
+
+  group('lookups and day counters', () {
+    late UserProfile profile;
+    late Cycle older;
+    late Cycle current;
+
+    setUp(() {
+      // older:   1 Oct - 28 Oct (period 1 Oct - 5 Oct)
+      // current: 29 Oct -> today
+      profile = onboardedProfile(
+        service,
+        lastPeriodStart: DateTime(2025, 10, 1),
+      );
+      older = profile.cycles.first;
+      current = service.startPeriod(profile, date: DateTime(2025, 10, 29));
+    });
+
+    test('findCycleOnDate: returns the cycle that contains the date', () {
+      expect(service.findCycleOnDate(profile, DateTime(2025, 10, 15)), older);
+      expect(service.findCycleOnDate(profile, DateTime(2025, 11, 10)), current);
+    });
+
+    test('findCycleOnDate BOUNDARY: first and last day of a cycle', () {
+      expect(service.findCycleOnDate(profile, DateTime(2025, 10, 1)), older);
+      expect(service.findCycleOnDate(profile, DateTime(2025, 10, 28)), older);
+      expect(service.findCycleOnDate(profile, DateTime(2025, 10, 29)), current);
+    });
+
+    test('findCycleOnDate: null before the first cycle', () {
+      expect(service.findCycleOnDate(profile, DateTime(2025, 9, 30)), isNull);
+    });
+
+    test('findCycleById: finds an existing id, null for an unknown id', () {
+      expect(service.findCycleById(profile, older.id), older);
+      expect(service.findCycleById(profile, 'does-not-exist'), isNull);
+    });
+
+    test('getCurrentCycle / getFinishedCycles', () {
+      expect(service.getCurrentCycle(profile), current);
+      expect(service.getFinishedCycles(profile), [older]);
+    });
+
+    test('getPeriodLength / getCycleLength count both first and last day', () {
+      expect(service.getPeriodLength(older), 5); // 1 Oct - 5 Oct
+      expect(service.getCycleLength(older), 28); // 1 Oct - 28 Oct
+    });
+
+    test('getPeriodLength / getCycleLength are null while still running', () {
+      expect(service.getPeriodLength(current), isNull); // period ongoing
+      expect(service.getCycleLength(current), isNull); // current cycle
+    });
+
+    test('getDayOfCycle: first day is day 1', () {
+      expect(service.getDayOfCycle(current, DateTime(2025, 10, 29)), 1);
+      expect(service.getDayOfCycle(current, DateTime(2025, 11, 20)), 23);
+    });
+
+    test('getDayOfPeriod: day number during the period', () {
+      // older period: 1 Oct - 5 Oct
+      expect(service.getDayOfPeriod(older, DateTime(2025, 10, 1)), 1);
+      expect(service.getDayOfPeriod(older, DateTime(2025, 10, 5, 22)), 5);
+    });
+
+    test('getDayOfPeriod: null before the start and after the end', () {
+      expect(service.getDayOfPeriod(older, DateTime(2025, 9, 30)), isNull);
+      expect(service.getDayOfPeriod(older, DateTime(2025, 10, 6)), isNull);
+    });
+
+    test('getDayOfPeriod: ongoing period keeps counting', () {
+      expect(service.getDayOfPeriod(current, DateTime(2025, 11, 20)), 23);
+    });
+  });
 }
