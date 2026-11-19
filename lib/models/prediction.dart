@@ -9,8 +9,8 @@ class Prediction {
   /// profile.completedCycleCount at the time of the calculation.
   final int basedOnCycles;
 
-  /// profile.usesLearnedAverages: true = based on real cycles,
-  /// false = still based on onboarding answers.
+  /// true = based on her real cycles, false = still her onboarding answers
+  /// (show "estimated" in the UI).
   final bool usesLearnedAverages;
 
   // ex: predicted date: 29-10-2025 and actual start date(today): 30-10-2025
@@ -36,14 +36,6 @@ class Prediction {
          predictionEnd.month,
          predictionEnd.day,
        ),
-       earliestStart = DateTime(
-         earliestStart.year,
-         earliestStart.month,
-         earliestStart.day,
-       ),
-       latestStart = DateTime(
-         latestStart.year,
-         latestStart.month,
-         latestStart.day,
-       );
+       earliestStart = dateOnly(earliestStart),
+       latestStart = dateOnly(latestStart);
 }

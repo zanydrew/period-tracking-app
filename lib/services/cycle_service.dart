@@ -1,4 +1,6 @@
 // Day of the cycle (Day 1 of your cycle)
+import 'package:period_tracking_app/utils/date_utils.dart';
+
 int dayOfCycle(DateTime today) => daysBetween(startDate, today) + 1;
 
 int? dayOfPeriod(DateTime today) {

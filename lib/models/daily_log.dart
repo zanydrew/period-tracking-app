@@ -28,4 +28,9 @@ class DailyLog {
     this.moods = const {},
     this.bodySymptoms = const {},
   }) : date = DateTime(date.year, date.month, date.day);
+
+  @override
+  String toString() =>
+      'DailyLog date: $date, flow: $flow, cramps: $cramps, moods: $moods, '
+      'body: $bodySymptoms';
 }
